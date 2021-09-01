@@ -42,6 +42,9 @@ export default class {
               return {
                 ...doc.data(),
                 date: formatDate(doc.data().date),
+                /*FIXING ISSUE: Bills / les notes de frais s'affichent par ordre décroissant est passé au rouge.
+                adding rawDate Property so it can be sorted*/
+                rawDate: doc.data().date,
                 status: formatStatus(doc.data().status)
               }
             } catch(e) {
@@ -56,6 +59,12 @@ export default class {
             }
           })
           .filter(bill => bill.email === userEmail)
+          /*FIXING ISSUE: Bills / les notes de frais s'affichent par ordre décroissant est passé au rouge.
+                Sorting results by date ascending*/
+          .sort(function(a,b) {
+            return new Date(a.rawDate) - new Date(b.rawDate);
+          })
+
           console.log('length', bills.length)
         return bills
       })
