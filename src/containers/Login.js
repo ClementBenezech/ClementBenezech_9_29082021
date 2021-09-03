@@ -35,8 +35,13 @@ export default class Login {
   handleSubmitAdmin = e => {
     const user = {
       type: "Admin",
-      email: e.target.querySelector(`input[data-testid="employee-email-input"]`).value,
-      password: e.target.querySelector(`input[data-testid="employee-password-input"]`).value,
+      /*FIXING ISSUE: Dans le rapport de test "Login, si un administrateur remplit correctement les champs du Login, 
+      il devrait naviguer sur la page Dashboard", le test est passé au rouge (cf. copie d'écran).*/
+      /* ORIGINAL CODE email: e.target.querySelector(`input[data-testid="employee-email-input"]`).value,
+      password: e.target.querySelector(`input[data-testid="employee-password-input"]`).value,*/
+      /******************NEW CODE**********************/
+      email: e.target.querySelector(`input[data-testid="admin-email-input"]`).value,
+      password: e.target.querySelector(`input[data-testid="admin-password-input"]`).value,
       status: "connected"
     }
     this.localStorage.setItem("user", JSON.stringify(user))
