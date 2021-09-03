@@ -61,11 +61,11 @@ export default class {
           .filter(bill => bill.email === userEmail)
           /*FIXING ISSUE: Bills / les notes de frais s'affichent par ordre décroissant est passé au rouge.
                 Sorting results by date ascending*/
-          .sort(function(a,b) {
-            return new Date(a.rawDate) - new Date(b.rawDate);
-          })
+          /*.sort(function(a,b) {
+            return new Date(b.rawDate) - new Date(a.rawDate);
+          })*/
 
-          console.log('length', bills.length)
+          console.log(bills)
         return bills
       })
       .catch(error => error)

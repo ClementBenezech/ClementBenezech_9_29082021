@@ -20,6 +20,11 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
+  /*FIXING ISSUE: Bills / les notes de frais s'affichent par ordre décroissant est passé au rouge.*/
+  data.sort(function(a,b) {
+    return new Date(b.date) - new Date(a.date);
+  })
+
   return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
 }
 
