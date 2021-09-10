@@ -19,6 +19,16 @@ export default class NewBill {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
+    /*FIXING ISSUE [Bug Hunt] - Bills:  empêcher la saisie d'un document qui a une extension différente de jpg, jpeg ou png 
+    au niveau du formulaire du fichier NewBill.js*/
+    /*Finding out the extension of the submitted file by splitting it at the '.'*/
+    const extension = fileName.split(".");
+
+    /*creating a list of authorized file formats to compare to current extension*/
+    const validFileFormats = ['jpg', 'jpeg', 'png'];
+
+    /*testing that the value of the extension matches the authorized ones*/
+    if (validFileFormats.find( element => extension[1] === element) != undefined) {
     this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
@@ -28,6 +38,12 @@ export default class NewBill {
         this.fileUrl = url
         this.fileName = fileName
       })
+    }
+    else { 
+      //If format is invalid, display an alert, then clear the value of the input element. 
+      alert("Only JPG, JPEG and PNG files are allowed");
+      this.document.querySelector(`input[data-testid="file"]`).value = '';
+    }
   }
   handleSubmit = e => {
     e.preventDefault()

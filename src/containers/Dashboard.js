@@ -85,10 +85,28 @@ export default class {
     if (typeof $('#modaleFileAdmin1').modal === 'function') $('#modaleFileAdmin1').modal('show')
   }
 
+  
+  
   handleEditTicket(e, bill, bills) {
+    /*Fixing Issue [Bug Hunt] - Dashboard : Je suis connecté en tant qu'administrateur RH, 
+    je déplie une liste de tickets (par exemple : statut "validé"), je sélectionne un ticket, 
+    puis je déplie une seconde liste (par exemple : statut "refusé"), 
+    je ne peux plus sélectionner un ticket de la première liste.*/
+
+    /*Here we can see that the e argument of the handleEditTicket function is never used. Instead THIS is used, 
+    which results in the current selected sublist of bills to be targeted*/
+    
+    /*OLD CODE WAS
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
-    if (this.counter % 2 === 0) {
+    if (this.counter % 2 === 0) {*/
+
+    /*NEW CODE IS */
+
+    if (e.counter === undefined || e.id !== bill.id) e.counter = 0
+    if (e.id === undefined || e.id !== bill.id) e.id = bill.id
+    if (e.counter % 2 === 0) {
+
       bills.forEach(b => {
         $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
       })
@@ -146,6 +164,7 @@ export default class {
     }
 
     bills.forEach(bill => {
+      //SO this is where the event listener is defined?
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
 
