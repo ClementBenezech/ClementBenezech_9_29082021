@@ -1,6 +1,7 @@
 import { screen } from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
+import LoadingPage from "./LoadingPage.js"
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -8,6 +9,14 @@ describe("Given I am connected as an employee", () => {
       const html = BillsUI({ data: []})
       document.body.innerHTML = html
       //to-do write expect expression
+    })
+    test("Then if there is an error, it is returned", () => {
+      const error = BillsUI({ data: [], loading: false, error: "error"})
+      expect(error).toEqual("error")
+    })
+    test("Then the UI is loading, loadingPage is returned", () => {
+      const error = BillsUI({ data: [], loading: true, error: "false"})
+      expect(error).toEqual(loadingPage())
     })
     test("Then bills should be ordered from earliest to latest", () => {
       const html = BillsUI({ data: bills })
