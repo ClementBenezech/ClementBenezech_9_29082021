@@ -62,5 +62,11 @@ export default {
         "fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=4df6ed2c-12c8-42a2-b013-346c1346f732"
       }]
     })
-  }
+  },
+  /*storage: {ref: jest.fn().mockImplementation(() => {return Promise.resolve(
+       {put: jest.fn().mockImplementation(() => Promise.resolve(true))}
+  )})}*/
+  /*storage : {ref : () => {return  {put : () => {return Promise.resolve(() => {return Promise.resolve("test")})}, getDownLoadUrl: () => "test"}}}*/
+  storage : {ref : () => {return  {put : () => {return Promise.resolve({ref: {getDownloadUrl: () => {return Promise.resolve("test")}}})}}}}
 }
+

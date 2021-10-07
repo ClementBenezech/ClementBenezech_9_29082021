@@ -33,7 +33,7 @@ export default class NewBill {
       .storage
       .ref(`justificatifs/${fileName}`)
       .put(file)
-      .then(snapshot => snapshot.ref.getDownloadURL())
+      .then(snapshot => snapshot.ref.getDownloadURL()) /**/
       .then(url => {
         this.fileUrl = url
         this.fileName = fileName
@@ -45,6 +45,7 @@ export default class NewBill {
       this.document.querySelector(`input[data-testid="file"]`).value = '';
     }
   }
+  
   handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
@@ -66,7 +67,7 @@ export default class NewBill {
     this.onNavigate(ROUTES_PATH['Bills'])
   }
 
-  // not need to cover this function by tests
+  /* istanbul ignore next */
   createBill = (bill) => {
     if (this.firestore) {
       this.firestore
