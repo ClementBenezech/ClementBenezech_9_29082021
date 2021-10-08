@@ -78,22 +78,16 @@ describe("Given I am connected as an employee", () => {
       const html = BillsUI({ data: bills })
       //Putting BillsUi in the page content
       document.getElementsByClassName("content")[0].innerHTML = html
-      
-      //Initializing one bill object so we can mock its method.
-      const someBill = new Bill({document : document, onNavigate : () => {return true}, firestore : fireStoreMock, localStorage:localStorage})
-      //Overriding  the handleClickIconEye method
-      let spy = jest.spyOn(someBill, 'handleClickIconEye').mockImplementation(() => true);
       //Selection an eye in the dom so we can click it
       const icon = document.getElementById("eye")
+      //Initializing one bill object so we can mock its methods
+      const someBill = new Bill({document : document, onNavigate : () => {return true}, firestore : fireStoreMock, localStorage:localStorage})
+      someBill.handleClickIconEye(icon)
+      //Overriding  the handleClickIconEye method
+      let spy = jest.spyOn(someBill, 'handleClickIconEye').mockImplementation(() => true);
       userEvent.click(icon)
       //checking if the handleClickiconEye Method has been called when we did click on the eye.
       expect(spy).toHaveBeenCalled()
-
-      /*Another Approach I tried was to call manually the handleClickIconEye method and check if the modale became visible
-      However, Despite all my efforts, I just could not get Jquery to be loaded during the jest test, so I got an error
-      of the $(...)modal is not a function*/
-      /*someBill.handleClickIconEye(icon)*/
-      /*expect(screen.queryByTestId('modaleFile').classList).toContain('show');*/
     })
 
     test("Then if there is an error, it is returned", () => {
@@ -113,6 +107,35 @@ describe("Given I am connected as an employee", () => {
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
+    })
+  })
+})
+
+describe("Given I am a user connected as employee", () => {
+  describe("When I navigate to Bills", () => {
+    test("fetches bills from mock API GET", async () => {
+       const getSpy = jest.spyOn(fireStoreMock, "get")
+       const bills = await fireStoreMock.get()
+       expect(getSpy).toHaveBeenCalledTimes(1)
+       expect(bills.data.length).toBe(4)
+    })
+    test("fetches bills from an API and fails with 404 message error", async () => {
+      fireStoreMock.get.mockImplementationOnce(() =>
+        Promise.reject(new Error("Erreur 404"))
+      )
+      const html = BillsUI({ error: "Erreur 404" })
+      document.body.innerHTML = html
+      const message = await screen.getByText(/Erreur 404/)
+      expect(message).toBeTruthy()
+    })
+    test("fetches messages from an API and fails with 500 message error", async () => {
+      fireStoreMock.get.mockImplementationOnce(() =>
+        Promise.reject(new Error("Erreur 500"))
+      )
+      const html = BillsUI({ error: "Erreur 500" })
+      document.body.innerHTML = html
+      const message = await screen.getByText(/Erreur 500/)
+      expect(message).toBeTruthy()
     })
   })
 })

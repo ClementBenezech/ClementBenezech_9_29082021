@@ -41,7 +41,7 @@ export default class NewBill {
     }
     else { 
       //If format is invalid, display an alert, then clear the value of the input element. 
-      alert("Only JPG, JPEG and PNG files are allowed");
+      /*alert("Only JPG, JPEG and PNG files are allowed");*/
       this.document.querySelector(`input[data-testid="file"]`).value = '';
     }
   }

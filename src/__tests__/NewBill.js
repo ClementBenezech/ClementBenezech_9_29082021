@@ -1,4 +1,4 @@
-import { screen, fire } from "@testing-library/dom"
+import { screen, fireEvent } from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import fireStoreMock from "../__mocks__/firebase"
@@ -19,24 +19,46 @@ describe("Given I am connected as an employee", () => {
     })
     test("Then if the file is changed and has an invalid extension", () => {
 
-      const billUI = NewBillUI()
+      /*const billUI = NewBillUI()
       document.body.innerHTML = billUI
       const billResult = new NewBill({document : document, onNavigate : "dummy", firestore : fireStoreMock, localStorage:localStorage})
-      billResult.handleChangeFile({target : {"value" : "test.invalid"}})
+      billResult.handleChangeFile({target : {"value" : "test.invalid"}})*/
+
+      //Initializing BillUI
+      const billUI = NewBillUI()
+      document.body.innerHTML = billUI
+      //Creating dummy file to be uploaded
+      const file = new File(['hello'], 'hello.bad', {type: 'image/bad'})
+      //Getting file input from DOM
+      const fileInput = screen.getByTestId("file")
+      //Uploading File as a user would do
+      userEvent.upload(fileInput, file)
+
+      //Applying handleChangeFile Method
+      const billResult = new NewBill({document : document, onNavigate : "dummy", firestore : fireStoreMock, localStorage:localStorage})
+      billResult.handleChangeFile({target : {"value" : fileInput.files[0].name}})
+
+      //Checking if file has been blocked due to bad extension
+      expect(fileInput.value).toBe("")
     })
     test("Then if the file is changed and has a valid extension", () => {
 
+      //Initializing BillUI
       const billUI = NewBillUI()
       document.body.innerHTML = billUI
+      //Creating dummy file to be uploaded
+      const file = new File(['hello'], 'hello.png', {type: 'image/png'})
+      //Getting file input from DOM
+      const fileInput = screen.getByTestId("file")
+      //Uploading File as a user would do
+      userEvent.upload(fileInput, file)
+
       const billResult = new NewBill({document : document, onNavigate : "dummy", firestore : fireStoreMock, localStorage:localStorage})
-      let spy = jest.spyOn(billResult, 'handleChangeFile').mockImplementation(() => true);
+      billResult.handleChangeFile({target : {"value" : fileInput.files[0].name}})
 
-      const inputEmailUser = screen.getByTestId("employee-email-input")
-    fireEvent.change(inputEmailUser, { target: { value: inputData.email } })
-    expect(inputEmailUser.value).toBe(inputData.email)
+      //Checking if file has been uploaded
+      expect(fileInput.files[0].name).toBe("hello.png")
 
-      billResult.handleChangeFile({target : {"value" : "test.jpg"}})
-      expect(spy).toHaveBeenCalled()
     })
     test("If the form is submitted", () => {
 
