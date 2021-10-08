@@ -71,6 +71,11 @@ describe("Given I am connected as an employee", () => {
     
 
     test("Then if icon eye is clicked, it opens the modale", () => {
+      // Mocking boostrap modale 
+      global.$.fn.modal = jest.fn((className) => {
+      document.getElementById("modaleFile").classList.add(className)
+      });
+      
       //Initializing page by calling the router
       document.body.innerHTML = "<div id ='root'></div>"
       Router();
@@ -83,11 +88,7 @@ describe("Given I am connected as an employee", () => {
       //Initializing one bill object so we can mock its methods
       const someBill = new Bill({document : document, onNavigate : () => {return true}, firestore : fireStoreMock, localStorage:localStorage})
       someBill.handleClickIconEye(icon)
-      //Overriding  the handleClickIconEye method
-      let spy = jest.spyOn(someBill, 'handleClickIconEye').mockImplementation(() => true);
-      userEvent.click(icon)
-      //checking if the handleClickiconEye Method has been called when we did click on the eye.
-      expect(spy).toHaveBeenCalled()
+      expect(screen.getByTestId('modaleFile').classList).toContain('show')
     })
 
     test("Then if there is an error, it is returned", () => {

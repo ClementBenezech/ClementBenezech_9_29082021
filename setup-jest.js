@@ -1,6 +1,5 @@
-import $ from 'jquery';
+import $ from './node_modules/jquery';
 global.$ = global.jQuery = $;
 
-// If you want to mock bootstrap
-global.$.fn.modal = jest.fn(() => $());
+
 
