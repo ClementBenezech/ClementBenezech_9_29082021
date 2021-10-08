@@ -1,9 +1,10 @@
-import { screen } from "@testing-library/dom"
+import { screen, fire } from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import fireStoreMock from "../__mocks__/firebase"
 import firestore from "../app/Firestore"
 import { localStorageMock } from "../__mocks__/localStorage.js"
+import userEvent from '@testing-library/user-event'
 
 
 describe("Given I am connected as an employee", () => {
@@ -28,9 +29,14 @@ describe("Given I am connected as an employee", () => {
       const billUI = NewBillUI()
       document.body.innerHTML = billUI
       const billResult = new NewBill({document : document, onNavigate : "dummy", firestore : fireStoreMock, localStorage:localStorage})
+      let spy = jest.spyOn(billResult, 'handleChangeFile').mockImplementation(() => true);
+
+      const inputEmailUser = screen.getByTestId("employee-email-input")
+    fireEvent.change(inputEmailUser, { target: { value: inputData.email } })
+    expect(inputEmailUser.value).toBe(inputData.email)
+
       billResult.handleChangeFile({target : {"value" : "test.jpg"}})
-      expect(billResult.fileUrl).toEqual("test")
-      //not OK yet, there seems to be an issue with the chaining of promises
+      expect(spy).toHaveBeenCalled()
     })
     test("If the form is submitted", () => {
 

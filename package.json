@@ -15,6 +15,9 @@
       "!**/external/**",
       "!**/fixtures/**",
       "!**/lcov-report/**"
+    ],
+    "coveragePathIgnorePatterns" : [
+      "<rootDir>/src/libs/jquery.js"
     ]
   },
   "type": "module",

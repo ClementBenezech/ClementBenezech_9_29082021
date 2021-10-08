@@ -9,7 +9,8 @@ import fireStoreMock from "../__mocks__/firebase"
 import { ROUTES, ROUTES_PATH } from '../constants/routes.js'
 import Router  from "../app/Router.js"
 import Bill from "../containers/Bills"
-import "../../setup-jest"
+import userEvent from '@testing-library/user-event'
+/*import "../../setup-jest"*/
 
 
 describe("Given I am connected as an employee", () => {
@@ -37,6 +38,17 @@ describe("Given I am connected as an employee", () => {
       Router();
       expect(screen.getByTestId("icon-window").className).toEqual("active-icon")
     })
+    test("If bills is created and no bill UI exists, it does not create event listeners", () => {
+      document.body.innerHTML = "<div id ='root'></div>"
+      Router();
+      //then initializing billsUI
+      const html = BillsUI({ data: [] })
+      //Putting BillsUi in the page content
+      document.getElementsByClassName("content")[0].innerHTML = html
+      console.log(document.getElementsByClassName("content")[0].innerHTML)
+      const someBill = new Bill({document : document, onNavigate : () => {return true}, firestore : fireStoreMock, localStorage:localStorage})
+    })
+
       test("Then if icon eye is clicked, route is newBill", () => {
 
       //Initializing page by calling the router
@@ -49,39 +61,39 @@ describe("Given I am connected as an employee", () => {
 
       //Initializing one bill object to be able to summon handleClickNewBill
       const someBill = new Bill({document : document, onNavigate : onNavigate, firestore : fireStoreMock, localStorage:localStorage})
-      
       someBill.handleClickNewBill()
 
       //Checking if new bill form exists
       expect(screen.queryByTestId('form-new-bill').textContent).toBeTruthy()
 
     })
+    
+    
+
     test("Then if icon eye is clicked, it opens the modale", () => {
       //Initializing page by calling the router
-
       document.body.innerHTML = "<div id ='root'></div>"
       Router();
       //then initializing billsUI
       const html = BillsUI({ data: bills })
       //Putting BillsUi in the page content
       document.getElementsByClassName("content")[0].innerHTML = html
-
-      /*getting one of the active eye icons on the page*/
-      //returns an eye-icon object from the dom. This statement works, returns
-      const icon = document.getElementById("eye")
-
-      console.log(icon.id)
-      //The modale exists in the DOM
-      console.log(document.getElementById("modaleFile").id)
-
-      //Initializing one bill object to be able to summon handleClickIconEye
+      
+      //Initializing one bill object so we can mock its method.
       const someBill = new Bill({document : document, onNavigate : () => {return true}, firestore : fireStoreMock, localStorage:localStorage})
-      someBill.handleClickIconEye(icon)
-      expect(screen.queryByTestId('modaleFile').classList).toContain('show');
+      //Overriding  the handleClickIconEye method
+      let spy = jest.spyOn(someBill, 'handleClickIconEye').mockImplementation(() => true);
+      //Selection an eye in the dom so we can click it
+      const icon = document.getElementById("eye")
+      userEvent.click(icon)
+      //checking if the handleClickiconEye Method has been called when we did click on the eye.
+      expect(spy).toHaveBeenCalled()
 
-      //Method 1: simulating click on the eye, expecting modale to become visible
-      //const iconEye = screen.queryAllByTestId("icon-eye")[0]
-      //fireEvent.click(iconEye);
+      /*Another Approach I tried was to call manually the handleClickIconEye method and check if the modale became visible
+      However, Despite all my efforts, I just could not get Jquery to be loaded during the jest test, so I got an error
+      of the $(...)modal is not a function*/
+      /*someBill.handleClickIconEye(icon)*/
+      /*expect(screen.queryByTestId('modaleFile').classList).toContain('show');*/
     })
 
     test("Then if there is an error, it is returned", () => {

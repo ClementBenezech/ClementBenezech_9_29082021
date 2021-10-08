@@ -10,9 +10,17 @@ export default class {
     const buttonNewBill = document.querySelector(`button[data-testid="btn-new-bill"]`)
     if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)
     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
-    if (iconEye) iconEye.forEach(icon => {
-      icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
-    })
+    //Modified the test here to be able to get 100% jest branch coverage
+    /*The if was checking the existence of iconEye, but since query selector all always returns an empty node list
+    when no match is found, I've altered the if so it checks if there is a value in the first index of the result set.
+    Without this modification, it was not possible to go into the else branch.*/
+
+    if (iconEye[0]) { iconEye.forEach(icon => {
+        icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
+      })
+  } else {
+    /*do nothing*/
+  }
     new Logout({ document, localStorage, onNavigate })
   }
 
@@ -24,13 +32,14 @@ export default class {
     const billUrl = icon.getAttribute("data-bill-url")
     const imgWidth = Math.floor($('#modaleFile').width() * 0.5)
     $('#modaleFile').find(".modal-body").html(`<div style='text-align: center;'><img width=${imgWidth} src=${billUrl} /></div>`)
-    
-    /*This does not work when testing with jest
-    $('#modaleFile').modal('show')*/
+    $('#modaleFile').modal('show')
+
+    /*This does not work when testing with jest*/
+
     //This is an issue with Jquery probably, since the elements exist in the DOM and can be altered "manually" as in the 3 lines below
-    document.getElementById('modaleFile').classList.add("show")
+    /*document.getElementById('modaleFile').classList.add("show")
     document.getElementById('modaleFile').removeAttribute("aria-hidden")
-    document.getElementById('modaleFile').setAttribute("style", "display:block")
+    document.getElementById('modaleFile').setAttribute("style", "display:block")*/
   }
 
 

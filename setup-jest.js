@@ -1,3 +1,3 @@
-import $ from 'jquery';
+import $ from './src/libs/jquery.js';
 global.$ = global.jQuery = $;
 
