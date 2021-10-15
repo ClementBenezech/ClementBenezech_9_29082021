@@ -63,6 +63,18 @@ export default {
       }]
     })
   },
+  post: (data) => {
+    
+      if (data == "validData") {
+        return Promise.resolve({data: [{response: '200'}]})
+      }
+      if (data == "internalError") {
+        return Promise.resolve({data: [{response: '500'}]})
+      }
+      if (data == "notFound") {
+        return Promise.resolve({data: [{response: '404'}]})
+      }
+  },
   /*storage: {ref: jest.fn().mockImplementation(() => {return Promise.resolve(
        {put: jest.fn().mockImplementation(() => Promise.resolve(true))}
   )})}*/

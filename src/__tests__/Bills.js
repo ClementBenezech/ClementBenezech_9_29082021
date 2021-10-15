@@ -16,7 +16,7 @@ import userEvent from '@testing-library/user-event'
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
 
-          //Handling firestore behavior IS IT THE SOLUTION TO MOCK GETURL IN NEWBILL?
+          //Handling firestore behavior
           jest.mock("../app/Firestore");
           firestore.bills = () => ({bills, get: jest.fn().mockResolvedValue()})
     
@@ -30,8 +30,6 @@ describe("Given I am connected as an employee", () => {
           Object.defineProperty(window, "location", {value : {hash : ROUTES_PATH['Bills'], href: "http://test.com/" } } )
 
       test("Then bill icon in vertical layout should be highlighted", () => {
-      /*const html = BillsUI({ data: []})
-      document.body.innerHTML = html*/
 
       //Creating HTML container, , then launching router
       document.body.innerHTML = "<div id ='root'></div>"
@@ -49,7 +47,7 @@ describe("Given I am connected as an employee", () => {
       const someBill = new Bill({document : document, onNavigate : () => {return true}, firestore : fireStoreMock, localStorage:localStorage})
     })
 
-      test("Then if icon eye is clicked, route is newBill", () => {
+      test("Then if new bill button is clicked, route is newBill", () => {
 
       //Initializing page by calling the router
       document.body.innerHTML = "<div id ='root'></div>"

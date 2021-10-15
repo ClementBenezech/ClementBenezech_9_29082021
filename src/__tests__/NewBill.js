@@ -79,5 +79,26 @@ describe("Given I am connected as an employee", () => {
       //checking if the Spy on CreateBill has been called
       expect(spy).toHaveBeenCalled()
     })
+      //POST TESTS
+    test("Fetches response from mock API post with valid Data", async () => {
+        const getSpy = jest.spyOn(fireStoreMock, "post")
+        const response = await fireStoreMock.post("validData")
+        expect(getSpy).toHaveBeenCalledTimes(1)
+        expect(response.data[0].response).toBe('200')
+    })
+
+    test("Fetches response from mock API post should get 500 internal error code", async () => {
+        const getSpy = jest.spyOn(fireStoreMock, "post")
+        const response = await fireStoreMock.post("internalError")
+        expect(getSpy).toHaveBeenCalledTimes(2)
+        expect(response.data[0].response).toBe('500')
+    })
+
+    test("Fetches response from mock API post and get not found 404", async () => {
+      const getSpy = jest.spyOn(fireStoreMock, "post")
+      const response = await fireStoreMock.post("notFound")
+      expect(getSpy).toHaveBeenCalledTimes(3)
+      expect(response.data[0].response).toBe('404')
+    })
   })
 })
