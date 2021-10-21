@@ -9,7 +9,7 @@ import userEvent from '@testing-library/user-event'
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
-    test ("Then newbill should have those values", () => {
+    test ("Then newbill should be created with the right values", () => {
       const html = NewBillUI()
       document.body.innerHTML = html
       const billResult = new NewBill({document : document, onNavigate : "dummy", firestore : fireStoreMock, localStorage:localStorage})
@@ -17,12 +17,7 @@ describe("Given I am connected as an employee", () => {
       expect(billResult.document).toEqual(document)
       expect(billResult.firestore).toEqual(fireStoreMock)
     })
-    test("Then if the file is changed and has an invalid extension", () => {
-
-      /*const billUI = NewBillUI()
-      document.body.innerHTML = billUI
-      const billResult = new NewBill({document : document, onNavigate : "dummy", firestore : fireStoreMock, localStorage:localStorage})
-      billResult.handleChangeFile({target : {"value" : "test.invalid"}})*/
+    test("Then if the file is changed and has an invalid extension, it should be blocked", () => {
 
       //Initializing BillUI
       const billUI = NewBillUI()
@@ -41,7 +36,7 @@ describe("Given I am connected as an employee", () => {
       //Checking if file has been blocked due to bad extension
       expect(fileInput.value).toBe("")
     })
-    test("Then if the file is changed and has a valid extension", () => {
+    test("Then if the file is changed and has a valid extension, it should be uploaded", () => {
 
       //Initializing BillUI
       const billUI = NewBillUI()
@@ -60,7 +55,7 @@ describe("Given I am connected as an employee", () => {
       expect(fileInput.files[0].name).toBe("hello.png")
 
     })
-    test("If the form is submitted", () => {
+    test("If the form is submitted, it should call createBill", () => {
 
       //defining current User email
       Object.defineProperty(window, 'localStorage', {value: localStorageMock })
